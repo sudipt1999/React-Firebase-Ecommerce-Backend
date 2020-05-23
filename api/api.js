@@ -97,9 +97,18 @@ router.get('/logout', (req, res) => {
 
 // get top 5 sections
 router.get('/section', (req, res) => {
+    console.log("GET SECTION ROUTE CALLED")
     Section.find()
            .then(data => {
-               return res.json(data)
+               const section = data.map(item => (
+                {
+                 id: item._id,
+                 title: item.title,
+                 imageUrl: item.imageUrl,
+                 linkUrl: item.linkUrl  
+                }
+               ))
+               return res.json(section)
            })
            .catch(err => {
                return res.json(err)
@@ -367,18 +376,26 @@ router.get('/collection', (req, res) => {
     .then(sections => {
         const sectionProductPromises = sections.map(section => {
             let id = section._id;
-            return Product.find({
+             return Product.find({
                     section: id
                 })
-                .then(products => {                     
-                    Data[section.title] = {
+                .then(products => {  
+                    const productList = products.map(p => (
+                        {
+                            id: p._id,
+                            name: p.name,
+                            price : p.price,
+                            section: p.section,
+                            imageUrl: p.imageUrl
+                        }
+                    ))                   
+                    return Data[section.title] = {
                         title: section.title,
                         routeName: section.title,
                         id,
-                        items: products
+                        items: productList
                     }
                 });
-
         });
         return Promise.all(sectionProductPromises);    
     })
