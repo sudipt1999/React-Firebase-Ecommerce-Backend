@@ -360,6 +360,7 @@ router.get('/automate', (req,res) => {
 
 
 router.get('/collection', (req, res) => {
+    console.log("COLLECTION ROUTE CALLED")
     const Data = {}
 
     Section.find({})
